@@ -69,18 +69,25 @@ function Header() {
 
 function Menu() {
   const pizzas = pizzaData;
+  //const pizzas = [];
   const numPizza = pizzas.length;
+
   return (
     <main className="menu">
       <h2>Our menu</h2>
 
       {numPizza > 0 ? (
-        <ul className="pizzas">
-          {pizzas.map((pizza_index) => (
-            <Pizza pizzaObj={pizza_index} key={pizza_index.name} />
-          ))}
-        </ul>
-      ) : null}
+        <React.Fragment>
+          <p>Authentic italian style & creative dishes</p>;
+          <ul className="pizzas">
+            {pizzas.map((pizza_index) => (
+              <Pizza pizzaObj={pizza_index} key={pizza_index.name} />
+            ))}
+          </ul>
+        </React.Fragment>
+      ) : (
+        <p>We're working on our menu</p>
+      )}
       {/* <Pizza
         name="Pizza spinaci"
         ingredients="Tomato, mozarella, spinach, and ricotta cheese"
@@ -97,14 +104,16 @@ function Menu() {
   );
 }
 
-function Pizza(props) {
+function Pizza({ pizzaObj }) {
+  if (pizzaObj.soldOut) return null;
+
   return (
     <li className="pizza">
-      <img src={props.pizzaObj.photoName} alt="Pizza Spinaci" />#
+      <img src={pizzaObj.photoName} alt="Pizza Spinaci" />#
       <div>
-        <h3>{props.pizzaObj.name}</h3>
-        <p>{props.pizzaObj.ngredients}</p>
-        <span>${props.pizzaObj.price + 3}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ngredients}</p>
+        <span>${pizzaObj.price + 3}</span>
       </div>
     </li>
   );
@@ -122,16 +131,28 @@ function Footer() {
   //return React.createElement("footer", null, "We're curently open");
   return (
     <footer className="footer">
-      {isOpen && (
-        <div className="order">
-          <p>We're open until {closeHour}:00 Come visit us or order online!</p>
-          <button className="btn">Order</button>
-        </div>
+      {isOpen ? (
+        <Order closeHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're close, we're open between {openHour} and {closeHour}
+        </p>
       )}
     </footer>
   );
 }
 
+function Order({ closeHour, openHour }) {
+  return (
+    <div className="order">
+      <p>
+        We're open from {openHour} until {closeHour}:00. Come visit us or order
+        online.
+      </p>
+      <button className="btn">Order</button>
+    </div>
+  );
+}
 //React v18
 // Strict mode va randa componentele de 2 ori
 // pentru a detecta bug-uri
